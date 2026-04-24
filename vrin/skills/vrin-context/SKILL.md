@@ -27,9 +27,9 @@ Run **one** shell command via the Bash tool:
 vrin query "<rephrased, self-contained question>" --json
 ```
 
-Rephrase the user's question into a *self-contained* query that would make sense to someone who didn't see the chat history (e.g. "Vrin's positioning vs RAG platforms" rather than "what you were saying earlier"). Keep it under ~200 characters. Do not append `--stream` or anything else — the default mode returns a synchronous JSON payload with everything needed.
+Rephrase the user's question into a *self-contained* query that would make sense to someone who didn't see the chat history (e.g. "Vrin's positioning vs RAG platforms" rather than "what you were saying earlier"). Keep it under ~200 characters.
 
-The command blocks until Vrin finishes (typically 30–120s). This is expected — do not interrupt, do not poll, do not ask the user. Let Bash wait.
+The command blocks for roughly 5–35s while Vrin does graph + vector retrieval and reranking. Do not interrupt, do not poll, do not ask the user — let Bash wait. Vrin does **not** invoke its own LLM to write a prose summary; it returns retrieval context only, and **you synthesize the user-facing answer yourself**. That's the whole point.
 
 ## Parsing the response
 
@@ -39,10 +39,12 @@ The JSON shape is:
 {
   "ok": true,
   "data": {
-    "summary": "…Vrin's own synthesized answer…",
+    "success": true,
+    "facts":  [{"subject": "…", "predicate": "…", "object": "…", "confidence": <float>, "source_document": "…"}, …],
+    "chunks": [{"title": "…", "content": "…", "score": <float>}, …],
+    "total_facts":  <int>,
+    "total_chunks": <int>,
     "metadata": {
-      "total_facts": <int>,
-      "total_chunks": <int>,
       "sources": [{"document_name": "…", "upload_id": "…", "source_type": "graph"|"vector"}, …],
       "entities": [<string>, …],
       "thinking_steps": [<string>, …],
@@ -52,9 +54,9 @@ The JSON shape is:
 }
 ```
 
-Use `data.summary` as the factual spine of your answer. Do **not** just echo it verbatim — integrate it into your response, expand where the user needs more, and cite sources inline (e.g. *"— per VRIN_WHITE_PAPER.md"*) using entries from `metadata.sources`.
+Synthesize the answer from the `facts` triples and `chunks` prose. Reason across the facts, weave in relevant chunk content, and cite sources inline (e.g. *"— per VRIN_WHITE_PAPER.md"*) using `source_document` on each fact / `metadata.sources` entries.
 
-If `metadata.insufficient_coverage` is `true`, or `total_facts` is 0, say so honestly: tell the user Vrin doesn't have coverage on this topic yet and ask whether they want to ingest a relevant doc (via `vrin upload <path>`).
+If `metadata.insufficient_coverage` is `true`, or both `total_facts` and `total_chunks` are 0, tell the user Vrin doesn't have coverage on this topic yet and suggest they `vrin upload <path>` the relevant doc.
 
 ## Failure modes
 
