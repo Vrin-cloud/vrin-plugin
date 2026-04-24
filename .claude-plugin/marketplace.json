@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "vrin",
-      "source": ".",
+      "source": "./vrin",
       "description": "Ambient Vrin retrieval for Claude Code. Ships a skill that runs `vrin query` via Bash on strategic/architectural/design-decision prompts. No MCP registration — zero per-turn token overhead.",
       "version": "0.1.0",
       "category": "knowledge",
