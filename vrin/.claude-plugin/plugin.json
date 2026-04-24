@@ -7,10 +7,7 @@
     "url": "https://vrin.cloud"
   },
   "homepage": "https://vrin.cloud",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vrin-cloud/vrin-plugin.git"
-  },
+  "repository": "https://github.com/Vrin-cloud/vrin-plugin",
   "license": "MIT",
   "keywords": [
     "vrin",
