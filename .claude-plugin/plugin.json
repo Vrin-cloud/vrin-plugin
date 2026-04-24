@@ -1,0 +1,23 @@
+{
+  "name": "vrin",
+  "version": "0.1.0",
+  "description": "Vrin curates grounded context from your knowledge base before Claude answers nuanced or strategic questions. Fires ambiently via the vrin CLI (no MCP schema overhead).",
+  "author": {
+    "name": "Vrin",
+    "url": "https://vrin.cloud"
+  },
+  "homepage": "https://vrin.cloud",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vrin-cloud/vrin-plugin.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vrin",
+    "knowledge-graph",
+    "retrieval",
+    "context",
+    "memory",
+    "rag"
+  ]
+}
